@@ -1,6 +1,11 @@
 import axios from "axios";
 
+
+const PROXY_URL = "https://corsproxy.io/?"; 
 const API_BASE_URL = "https://api.deezer.com";
+
+axios.defaults.baseURL = PROXY_URL + API_BASE_URL;
+
 const API_CHART_URL = "/chart";
 const API_SEARCH_URL = "/search";
 const API_ALL_GENRES_URL = "/genre";
