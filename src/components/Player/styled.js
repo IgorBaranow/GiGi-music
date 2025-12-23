@@ -1,4 +1,4 @@
-import { MOBILE_HEADER_HEIGHT, MOBILE_PLAYER_HEIGHT, PLAYER_HEIGHT } from "common/constants";
+import { MOBILE_PLAYER_HEIGHT, PLAYER_HEIGHT } from "common/constants";
 import { SubText, Text } from "components/ui/Typography";
 import styled from "styled-components";
 import { device } from "styles/BreakPoints";
@@ -11,15 +11,18 @@ export const Wrapper = styled.div`
     opened ? theme.colors.black : theme.colors.secondaryBlack};
   position: fixed;
   bottom: 0;
-  left: 0%;
+  left: 0;
   width: 100%;
   z-index: ${({ theme }) => theme.zIndex["30"]};
 
   ${device.lg} {
     height: ${(props) =>
-      props.opened ? `calc(100vh - ${MOBILE_HEADER_HEIGHT}px)` : `${MOBILE_PLAYER_HEIGHT}px`};
+      props.opened ? `100dvh` : `${MOBILE_PLAYER_HEIGHT}px`};
+    flex-direction: ${(props) => (props.opened ? "column" : "row")};
+    padding-bottom: ${(props) => (props.opened ? "env(safe-area-inset-bottom)" : "0")};
     border-top-right-radius: ${(props) => (props.opened ? 0 : "25px")};
     border-top-left-radius: ${(props) => (props.opened ? 0 : "25px")};
+    overflow: hidden;
   }
 `;
 
@@ -32,6 +35,10 @@ export const TrackInfoWrapper = styled.div`
 
   @media (max-width: 1400px) {
     min-width: 280px;
+  }
+
+  ${device.lg} {
+    min-width: auto;
   }
 `;
 
@@ -58,10 +65,14 @@ export const TrackImage = styled.img`
 `;
 
 export const BigTrackImage = styled.img`
-  height: 311px;
-  width: 311px;
+  width: 80%;
+  max-width: 300px;
+  aspect-ratio: 1 / 1;
+  max-height: 30dvh; 
+  object-fit: cover;
   border-radius: 10px;
-  margin: 0 auto 37px;
+  margin: 0 auto;
+  flex-shrink: 1;
 `;
 
 export const TrackTitle = styled(Text)`
@@ -87,7 +98,8 @@ export const ControlsWrapper = styled.div`
   gap: 34px;
 
   ${device.lg} {
-    margin: ${(props) => (props.opened ? "0 auto" : 0)};
+    margin: ${(props) => (props.opened ? "auto auto" : 0)};
+    gap: ${(props) => (props.opened ? "20px" : "34px")};
   }
 `;
 
@@ -105,7 +117,7 @@ export const ProgressWrapper = styled.div`
   width: 100%;
 
   ${device.lg} {
-    margin: ${(props) => (props.opened ? "40px 0" : 0)};
+    margin: ${(props) => (props.opened ? "20px 0" : 0)};
   }
 `;
 
@@ -128,7 +140,7 @@ export const VolumeWrapper = styled.div`
   min-width: 180px;
 
   ${device.xl} {
-    margin: ${(props) => (props.opened ? "48px auto 0" : "0 0 0 60px")};
+    margin: ${(props) => (props.opened ? "20px auto 30px" : "0 0 0 60px")};
     width: ${(props) => (props.opened ? "65%" : "auto")};
   }
 `;
@@ -140,7 +152,7 @@ export const BackButton = styled.button`
   font-size: 18px;
   line-height: 27px;
   padding: 10px 0;
-  margin: 28px 0 30px;
+  margin: ${(props) => (props.opened ? "10px 0" : "28px 0 30px")};
   font-weight: ${({ theme }) => theme.fontWeights.semibold};
   cursor: pointer;
 `;

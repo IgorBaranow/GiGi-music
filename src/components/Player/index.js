@@ -93,76 +93,89 @@ function PlayerLayout({
   opened,
   width,
 }) {
-  if (opened) {
+if (opened) {
     return (
-      <ContentWrapper display="flex" direction="column" gap={14}>
+      <ContentWrapper 
+        display="flex" 
+        direction="column" 
+        style={{ 
+          height: '100%', 
+          justifyContent: 'space-between', 
+          paddingBottom: '20px', 
+          gap: '5px'
+        }}
+      >
         <BackButton onClick={toggleOpen}>Back</BackButton>
         <BigTrackImage src={track.album.cover_big} alt={`${track?.album.title}'s cover`} />
-        <MobileTrackRow>
-          <TrackInfoWrapper>
-            <TrackInfoTextWrapper>
-              <TrackTitle>{track.title}</TrackTitle>
-              <ArtistName>{track.artist.name}</ArtistName>
-            </TrackInfoTextWrapper>
-          </TrackInfoWrapper>
-          <ControlsWrapper></ControlsWrapper>
-        </MobileTrackRow>
-        <ProgressWrapper opened={1}>
-          <TrackTime>{formatSecondsToMSS(playerState.currentTime)}</TrackTime>
-          <Slider
-            onChange={onTrackTimeDrag}
-            step={0.2}
-            min={0}
-            max={playerState.duration}
-            value={playerState.currentTime}
-            style={{ padding: "3px 0" }}
-            trackStyle={{ height: 8, backgroundColor: theme.colors.white }}
-            railStyle={{ height: 8, backgroundColor: theme.colors.darkGrey }}
-            handleStyle={{
-              border: "none",
-              height: 20,
-              width: 20,
-              backgroundColor: theme.colors.white,
-              marginTop: -6,
-            }}
-          />
-          <TrackTime last={1} grey={1}>
-            {formatSecondsToMSS(playerState.duration)}
-          </TrackTime>
-        </ProgressWrapper>
-        <ControlsWrapper opened={1}>
-          <IconButton>
-            <SkipLeft onClick={handlePrevSong} />
-          </IconButton>
-          <IconButton onClick={togglePlay} width={55} height={55} withBackground>
-            {isPlaying ? <Pause /> : <Play />}
-          </IconButton>
-          <IconButton>
-            <SkipRight onClick={handleNextSong} />
-          </IconButton>
-        </ControlsWrapper>
-        <VolumeWrapper opened={1}>
-          <IconButton height={24} width={24} onClick={toggleVolume}>
-            <Volume />
-          </IconButton>
-          <Slider
-            step={0.01}
-            min={0}
-            max={1}
-            value={playerState.volume}
-            onChange={onVolumeChange}
-            style={{ padding: "3px 0" }}
-            trackStyle={{ height: 8, backgroundColor: theme.colors.white }}
-            railStyle={{ height: 8, backgroundColor: theme.colors.darkGrey }}
-            handleStyle={{
-              border: "none",
-              height: 20,
-              width: 20,
-              backgroundColor: theme.colors.white,
-              marginTop: -6,
-            }}
-          />
-        </VolumeWrapper>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <MobileTrackRow>
+            <TrackInfoWrapper style={{ minWidth: 'auto' }}>
+              <TrackInfoTextWrapper>
+                <TrackTitle>{track.title}</TrackTitle>
+                <ArtistName>{track.artist.name}</ArtistName>
+              </TrackInfoTextWrapper>
+            </TrackInfoWrapper>
+          </MobileTrackRow>
+
+          <ProgressWrapper opened={1} style={{ margin: '10px 0' }}>
+            <TrackTime>{formatSecondsToMSS(playerState.currentTime)}</TrackTime>
+            <Slider
+              onChange={onTrackTimeDrag}
+              step={0.2}
+              min={0}
+              max={playerState.duration}
+              value={playerState.currentTime}
+              style={{ padding: "3px 0" }}
+              trackStyle={{ height: 6, backgroundColor: theme.colors.white }}
+              railStyle={{ height: 6, backgroundColor: theme.colors.darkGrey }}
+              handleStyle={{
+                border: "none",
+                height: 18,
+                width: 18,
+                backgroundColor: theme.colors.white,
+                marginTop: -6,
+              }}
+            />
+            <TrackTime last={1} grey={1}>
+              {formatSecondsToMSS(playerState.duration)}
+            </TrackTime>
+          </ProgressWrapper>
+
+          <ControlsWrapper opened={1} style={{ gap: '20px' }}>
+            <IconButton>
+              <SkipLeft onClick={handlePrevSong} />
+            </IconButton>
+            <IconButton onClick={togglePlay} width={50} height={50} withBackground>
+              {isPlaying ? <Pause /> : <Play />}
+            </IconButton>
+            <IconButton>
+              <SkipRight onClick={handleNextSong} />
+            </IconButton>
+          </ControlsWrapper>
+
+          <VolumeWrapper opened={1} style={{ margin: '10px auto 0' }}>
+            <IconButton height={20} width={20} onClick={toggleVolume}>
+              <Volume />
+            </IconButton>
+            <Slider
+              step={0.01}
+              min={0}
+              max={1}
+              value={playerState.volume}
+              onChange={onVolumeChange}
+              style={{ padding: "3px 0" }}
+              trackStyle={{ height: 6, backgroundColor: theme.colors.white }}
+              railStyle={{ height: 6, backgroundColor: theme.colors.darkGrey }}
+              handleStyle={{
+                border: "none",
+                height: 18,
+                width: 18,
+                backgroundColor: theme.colors.white,
+                marginTop: -6,
+              }}
+            />
+          </VolumeWrapper>
+        </div>
       </ContentWrapper>
     );
   }
