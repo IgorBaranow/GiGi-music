@@ -1,14 +1,14 @@
 import { styled } from "styled-components";
-import { ReactComponent as PlayIcon } from "assets/play.svg";
-import { ReactComponent as SkipIcon } from "assets/skip.svg";
-import { ReactComponent as PauseIcon } from "assets/pause.svg";
-import { ReactComponent as VolumeIcon } from "assets/volume.svg";
-import { ReactComponent as MusicIcon } from "assets/music.svg";
-import { ReactComponent as ArrowLeftIcon } from "assets/arrowLeftIcon.svg";
-import { ReactComponent as SearchIcon } from "assets/search.svg";
-import { ReactComponent as HeartIcon } from "assets/heart.svg";
-import { ReactComponent as UsersIcon } from "assets/users.svg";
-import { ReactComponent as Logo } from "assets/logo.svg";
+import { ReactComponent as PlayIcon } from "../../../assets/play.svg";
+import { ReactComponent as SkipIcon } from "../../../assets/skip.svg";
+import { ReactComponent as PauseIcon } from "../../../assets/pause.svg";
+import { ReactComponent as VolumeIcon } from "../../../assets/volume.svg";
+import { ReactComponent as MusicIcon } from "../../../assets/music.svg";
+import { ReactComponent as ArrowLeftIcon } from "../../../assets/arrowLeftIcon.svg";
+import { ReactComponent as SearchIcon } from "../../../assets/search.svg";
+import { ReactComponent as HeartIcon } from "../../../assets/heart.svg";
+import { ReactComponent as UsersIcon } from "../../../assets/users.svg";
+import { ReactComponent as Logo } from "../../../assets/logo.svg";
 
 const Play = styled(PlayIcon)`
   fill: ${(props) =>

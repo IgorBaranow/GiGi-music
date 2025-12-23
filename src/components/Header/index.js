@@ -12,7 +12,7 @@ function Header() {
         <Link to="/">
           <LogoWrapper>
             <Logo />
-            <SectionSubtitle>ZaMusic</SectionSubtitle>
+            <SectionSubtitle>GiMusic</SectionSubtitle>
           </LogoWrapper>
         </Link>
         <IconButton withBackground={true} height={58} width={58}>
