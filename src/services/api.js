@@ -1,100 +1,117 @@
 import axios from "axios";
 
+/**
+ * Мы используем относительный путь /api/deezer.
+ * Для этого в корне проекта должен быть файл vercel.json с настройкой rewrites.
+ */
+const api = axios.create({
+  baseURL: "/api/deezer",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-const PROXY_URL = "https://corsproxy.io/?"; 
-const API_BASE_URL = "https://api.deezer.com";
+// Интерцептор для логирования ошибок — поможет понять, если API упадет
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.error("--- API ERROR ---");
+    console.error("URL:", error.config?.url);
+    console.error("Status:", error.response?.status);
+    console.error("Message:", error.message);
+    return Promise.reject(error);
+  }
+);
 
-axios.defaults.baseURL = PROXY_URL + API_BASE_URL;
-
-const API_CHART_URL = "/chart";
-const API_SEARCH_URL = "/search";
-const API_ALL_GENRES_URL = "/genre";
-const API_ALL_ARTISTS_URL = "/artist";
-const API_TOP_TRACKS_RADIO_URL = "/radio/37151/tracks";
+/**
+ * Вспомогательная функция для очистки полных URL, 
+ * которые иногда приходят из Deezer (например, tracklist)
+ */
+const cleanUrl = (fullUrl) => {
+  return fullUrl.replace("https://api.deezer.com", "");
+};
 
 export async function loadTopRadioTracks() {
   try {
-    const data = await axios(`${API_TOP_TRACKS_RADIO_URL}?limit=100`);
-
-    if (!data?.data?.data) throw Error();
-
-    return data.data.data;
+    const { data } = await api.get("/radio/37151/tracks?limit=100");
+    if (!data?.data) throw new Error();
+    return data.data;
   } catch (err) {
-    throw Error("Failed to load radio!");
+    throw new Error("Failed to load radio!");
   }
 }
 
 export async function loadCharts() {
   try {
-    const data = await axios(API_CHART_URL);
-
-    if (!data?.data) throw Error();
-
-    return data.data;
+    const { data } = await api.get("/chart");
+    if (!data) throw new Error();
+    return data;
   } catch (err) {
-    throw Error("Failed to load chart!");
+    throw new Error("Failed to load chart!");
   }
 }
 
 export async function loadGenres() {
   try {
-    const data = await axios.get(API_ALL_GENRES_URL);
-    if (!data?.data?.data) throw Error();
-    return data.data.data.filter((genre) => genre.name.toLowerCase() !== "all");
+    const { data } = await api.get("/genre");
+    if (!data?.data) throw new Error();
+    // Фильтруем жанр "All", так как он обычно дублирует данные
+    return data.data.filter((genre) => genre.name.toLowerCase() !== "all");
   } catch (err) {
-    throw Error("Failed to load genres!");
+    throw new Error("Failed to load genres!");
   }
 }
+
 export async function loadGenre(genreId) {
   try {
-    const [genreData, radiosData] = await Promise.all([
-      axios.get(`${API_ALL_GENRES_URL}/${genreId}`),
-      axios.get(`${API_ALL_GENRES_URL}/${genreId}/radios`),
+    const [genreRes, radiosRes] = await Promise.all([
+      api.get(`/genre/${genreId}`),
+      api.get(`/genre/${genreId}/radios`),
     ]);
 
-    if (!genreData?.data || !radiosData?.data?.data) throw Error();
+    const radios = radiosRes.data?.data;
+    if (!genreRes.data || !radios || radios.length === 0) throw new Error();
 
-    const radios = radiosData.data.data;
-    console.log(radios);
-    console.log(radiosData);
+    // Выбираем случайное радио внутри жанра
     const randomIndex = Math.floor(Math.random() * radios.length);
-    const tracksData = await axios(radios[randomIndex].tracklist.replace(API_BASE_URL, ""));
+    const selectedRadio = radios[randomIndex];
+
+    // Очищаем URL треклиста и делаем запрос
+    const tracksRes = await api.get(cleanUrl(selectedRadio.tracklist));
 
     return {
-      genre: genreData.data,
-      tracks: tracksData.data.data,
+      genre: genreRes.data,
+      tracks: tracksRes.data?.data || [],
     };
   } catch (err) {
-    console.log(err);
-    throw Error("Failed to load genre!");
+    throw new Error("Failed to load genre!");
   }
 }
 
 export async function loadArtist(artistId) {
   try {
-    const [artistData, tracksData] = await Promise.all([
-      axios.get(`${API_ALL_ARTISTS_URL}/${artistId}`),
-      axios.get(`${API_ALL_ARTISTS_URL}/${artistId}/top`),
+    const [artistRes, tracksRes] = await Promise.all([
+      api.get(`/artist/${artistId}`),
+      api.get(`/artist/${artistId}/top`),
     ]);
 
-    if (!artistData?.data || !tracksData?.data?.data) throw Error();
+    if (!artistRes.data || !tracksRes.data?.data) throw new Error();
 
     return {
-      artist: artistData.data,
-      tracks: tracksData.data.data,
+      artist: artistRes.data,
+      tracks: tracksRes.data.data,
     };
   } catch (err) {
-    console.log(err);
-    throw Error("Failed to load artist!");
+    throw new Error("Failed to load artist!");
   }
 }
 
 export async function search(searchQuery) {
   try {
-    const data = await axios.get(`${API_SEARCH_URL}?q=${searchQuery}`);
-    if (!data?.data?.data) throw Error();
-    return data.data.data;
+    const { data } = await api.get(`/search?q=${encodeURIComponent(searchQuery)}`);
+    if (!data?.data) throw new Error();
+    return data.data;
   } catch (err) {
-    throw Error("Failed to load tracks!");
+    throw new Error("Failed to load tracks!");
   }
 }
