@@ -7,6 +7,9 @@ export const StyledTrackRow = styled.tr`
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
   border-radius: 10px;
+  background-color: ${({ theme, $isActive }) => $isActive ? theme.colors.lightWhite : "transparent"};
+  .text {display: ${({ $isActive }) => ($isActive ? "none" : "flex")};}
+  .icon {display: ${({ $isActive }) => ($isActive ? "block" : "none")};}
   &:hover {
     .text {
       display: none;

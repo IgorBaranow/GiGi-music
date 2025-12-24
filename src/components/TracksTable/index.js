@@ -71,6 +71,7 @@ function TracksTable({ tracks, isLoading }) {
           tracks?.map((currentTrack, index) => (
             <TrackRow
               isPlaying={track?.id === currentTrack.id && isPlaying}
+              isActive={track?.id === currentTrack.id}
               onClick={handleTrackClick}
               key={currentTrack.id}
               track={currentTrack}

@@ -28,10 +28,11 @@ function TrackRow({
   handleSaveTrackClick,
   isSaved,
   screenWidth,
+  isActive,
 }) {
   const isMobileLayout = screenWidth > breakpoints.md;
   return (
-    <StyledTrackRow onClick={() => onClick(track)}>
+    <StyledTrackRow $isActive={isActive} onClick={() => onClick(track)} >
       <TableData>
         <SongNumberText className="text">
           {track ? String(index + 1).padStart(2, "0") : <Skeleton width={27} height={27} />}
@@ -106,6 +107,7 @@ TrackRow.propTypes = {
   }),
   index: PropTypes.number,
   isPlaying: PropTypes.bool,
+  isActive: PropTypes.bool,
   handleSaveTrackClick: PropTypes.func,
   isSaved: PropTypes.bool,
   screenWidth: PropTypes.number,
